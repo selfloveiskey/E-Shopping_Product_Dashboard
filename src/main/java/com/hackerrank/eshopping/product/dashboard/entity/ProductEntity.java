@@ -1,6 +1,7 @@
 package com.hackerrank.eshopping.product.dashboard.entity;
 
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
+import com.hackerrank.eshopping.product.dashboard.model.UpdateProductDetailsRequest;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -9,27 +10,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "products")
-public class ProductEntity implements Serializable {
-
-    private static final long serialVersionUID = 2949736079142298511L;
+public class ProductEntity{
 
     @Id
-    @GeneratedValue
-    private long productID;
-
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String category;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double retail_price;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double discounted_price;
 
     @Column(nullable = false)

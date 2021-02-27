@@ -1,6 +1,7 @@
 package com.hackerrank.eshopping.product.dashboard.service;
 
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
+import com.hackerrank.eshopping.product.dashboard.model.UpdateProductDetailsRequest;
 import org.springframework.http.ResponseEntity;
 /*
 |---------------------------------------------------------------------------------
@@ -18,4 +19,14 @@ public interface ProductService {
     |----------------------------------------------------
     */
     ResponseEntity<String> createProduct(ProductDetailsRequest productDetailsRequest);
+
+    /*
+    |----------------------------------------------------
+    | Update a product
+    |----------------
+    | Steps:
+    |  - ProductService to ProductServiceImplementation
+    |----------------------------------------------------
+    */
+    ResponseEntity<String> updateProduct(Long product_id, ProductDetailsRequest productDetailsRequest);
 }

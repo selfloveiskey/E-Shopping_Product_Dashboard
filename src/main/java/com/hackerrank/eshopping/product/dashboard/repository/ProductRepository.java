@@ -17,5 +17,6 @@ public interface ProductRepository extends CrudRepository<ProductEntity, Long> {
     | and return it to the ProductServiceImplementation file
     |---------------------------------------------------------------------------
     */
-    Optional<ProductEntity> findById(Long id);
+
+      Optional<ProductEntity> findById(Long id);
 }
