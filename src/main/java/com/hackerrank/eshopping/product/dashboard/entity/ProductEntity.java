@@ -16,42 +16,34 @@ public class ProductEntity implements Serializable {
     @Id
     @GeneratedValue
     private long productID;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
     private Long id;
-    @Column(
-            nullable = false,
-            length = 50
-    )
+
+    @Column(nullable = false, length = 50)
     private String name;
-    @Column(
-            nullable = false,
-            length = 100
-    )
+
+    @Column(nullable = false, length = 100)
     private String category;
-    @Column(
-            nullable = false
-    )
-    private Double retailPrice;
-    @Column(
-            nullable = false
-    )
-    private Double discountedPrice;
-    @Column(
-            nullable = false
-    )
+
+    @Column(nullable = false)
+    private Double retail_price;
+
+    @Column(nullable = false)
+    private Double discounted_price;
+
+    @Column(nullable = false)
     private Boolean availability;
 
     public ProductEntity() {
     }
 
-    public ProductEntity(Long id, String name, String category, Double retailPrice, Double discountedPrice, Boolean availability) {
+    public ProductEntity(Long id, String name, String category, Double retail_price, Double discounted_price, Boolean availability) {
         this.id = id;
         this.name = name;
         this.category = category;
-        this.retailPrice = retailPrice;
-        this.discountedPrice = discountedPrice;
+        this.retail_price = retail_price;
+        this.discounted_price = discounted_price;
         this.availability = availability;
     }
 
@@ -59,8 +51,8 @@ public class ProductEntity implements Serializable {
         this.id = productDetails.getId();
         this.name = productDetails.getName();
         this.category = productDetails.getCategory();
-        this.retailPrice = productDetails.getRetailPrice();
-        this.discountedPrice = productDetails.getDiscountedPrice();
+        this.retail_price = productDetails.getRetail_price();
+        this.discounted_price = productDetails.getDiscounted_price();
         this.availability = productDetails.getAvailability();
     }
 
@@ -88,20 +80,20 @@ public class ProductEntity implements Serializable {
         this.category = category;
     }
 
-    public Double getRetailPrice() {
-        return this.retailPrice;
+    public Double getRetail_price() {
+        return this.retail_price;
     }
 
-    public void setRetailPrice(Double retailPrice) {
-        this.retailPrice = retailPrice;
+    public void setRetail_price(Double retailPrice) {
+        this.retail_price = retailPrice;
     }
 
-    public Double getDiscountedPrice() {
-        return this.discountedPrice;
+    public Double getDiscounted_price() {
+        return this.discounted_price;
     }
 
-    public void setDiscountedPrice(Double discountedPrice) {
-        this.discountedPrice = discountedPrice;
+    public void setDiscounted_price(Double discountedPrice) {
+        this.discounted_price = discountedPrice;
     }
 
     public Boolean getAvailability() {

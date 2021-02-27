@@ -10,8 +10,8 @@ public class ProductDetailsRequest {
     private Long id;
     private String name;
     private String category;
-    private Double retailPrice;
-    private Double discountedPrice;
+    private Double retail_price;
+    private Double discounted_price;
     private Boolean availability;
 
     public ProductDetailsRequest() {
@@ -41,20 +41,20 @@ public class ProductDetailsRequest {
         this.category = category;
     }
 
-    public Double getRetailPrice() {
-        return this.retailPrice;
+    public Double getRetail_price() {
+        return this.retail_price;
     }
 
-    public void setRetailPrice(Double retailPrice) {
-        this.retailPrice = retailPrice;
+    public void setRetail_price(Double retail_price) {
+        this.retail_price = retail_price;
     }
 
-    public Double getDiscountedPrice() {
-        return this.discountedPrice;
+    public Double getDiscounted_price() {
+        return this.discounted_price;
     }
 
-    public void setDiscountedPrice(Double discountedPrice) {
-        this.discountedPrice = discountedPrice;
+    public void setDiscounted_price(Double discounted_price) {
+        this.discounted_price = discounted_price;
     }
 
     public Boolean getAvailability() {
