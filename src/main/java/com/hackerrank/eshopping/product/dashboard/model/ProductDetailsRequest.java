@@ -1,8 +1,7 @@
 package com.hackerrank.eshopping.product.dashboard.model;
 
-import javax.persistence.Entity;
+public class ProductDetailsRequest {
 
-public class Product {
     private Long id;
     private String name;
     private String category;
@@ -10,20 +9,11 @@ public class Product {
     private Double discountedPrice;
     private Boolean availability;
 
-    public Product() {
-    }
-
-    public Product(Long id, String name, String category, Double retailPrice, Double discountedPrice, Boolean availability) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.retailPrice = retailPrice;
-        this.discountedPrice = discountedPrice;
-        this.availability = availability;
+    public ProductDetailsRequest() {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -31,7 +21,7 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -39,7 +29,7 @@ public class Product {
     }
 
     public String getCategory() {
-        return category;
+        return this.category;
     }
 
     public void setCategory(String category) {
@@ -47,7 +37,7 @@ public class Product {
     }
 
     public Double getRetailPrice() {
-        return retailPrice;
+        return this.retailPrice;
     }
 
     public void setRetailPrice(Double retailPrice) {
@@ -55,7 +45,7 @@ public class Product {
     }
 
     public Double getDiscountedPrice() {
-        return discountedPrice;
+        return this.discountedPrice;
     }
 
     public void setDiscountedPrice(Double discountedPrice) {
@@ -63,7 +53,7 @@ public class Product {
     }
 
     public Boolean getAvailability() {
-        return availability;
+        return this.availability;
     }
 
     public void setAvailability(Boolean availability) {
