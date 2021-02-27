@@ -1,7 +1,5 @@
 package com.hackerrank.eshopping.product.dashboard.model;
 
-import javax.persistence.Entity;
-
 public class Product {
     private Long id;
     private String name;

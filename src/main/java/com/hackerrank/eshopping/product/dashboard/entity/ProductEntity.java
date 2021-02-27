@@ -10,7 +10,9 @@ import javax.persistence.Id;
 
 @Entity(name = "products")
 public class ProductEntity implements Serializable {
-    private static final long serialVersionUID = -5602766744641144936L;
+
+    private static final long serialVersionUID = 2949736079142298511L;
+
     @Id
     @GeneratedValue
     private long productID;

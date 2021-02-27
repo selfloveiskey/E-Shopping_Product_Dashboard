@@ -1,5 +1,10 @@
 package com.hackerrank.eshopping.product.dashboard.model;
 
+/*
+|--------------------------------------------------------
+| Incoming JSON payload body
+|--------------------------------------------------------
+*/
 public class ProductDetailsRequest {
 
     private Long id;
