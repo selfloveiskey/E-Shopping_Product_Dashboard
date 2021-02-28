@@ -2,14 +2,14 @@ package com.hackerrank.eshopping.product.dashboard.service;
 
 import com.hackerrank.eshopping.product.dashboard.entity.ProductEntity;
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
-import com.hackerrank.eshopping.product.dashboard.model.UpdateProductDetailsRequest;
 import com.hackerrank.eshopping.product.dashboard.repository.ProductRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 /*
@@ -86,6 +86,26 @@ public class ServiceImpl implements ProductService{
             repository.save(idDuplicateCheck);
 
             return new ResponseEntity(HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ProductEntity getProductById(Long product_id) {
+
+        ProductEntity idDuplicateCheck = repository.findById(product_id).orElse(null);
+
+        /*
+        |---------------------------------------------------------------------------------
+        | If product with the requested ID does not exists then the HTTP response code
+        | should be 404; otherwise, the response code should be 200
+        |---------------------------------------------------------------------------------
+        */
+        if(idDuplicateCheck == null) {
+            return null;
+            //new ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+        else{
+            return idDuplicateCheck;
         }
     }
 }
