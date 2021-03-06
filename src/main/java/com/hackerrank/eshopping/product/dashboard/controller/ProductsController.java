@@ -2,18 +2,13 @@ package com.hackerrank.eshopping.product.dashboard.controller;
 
 import com.hackerrank.eshopping.product.dashboard.entity.ProductEntity;
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
-import com.hackerrank.eshopping.product.dashboard.model.UpdateProductDetailsRequest;
 import com.hackerrank.eshopping.product.dashboard.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
-import java.util.ArrayList;
 import java.util.List;
-
 /*
 |-------------------------------------------------------------
 | Responsible for all operations that have to do with products
@@ -28,63 +23,83 @@ public class ProductsController {
 
      /*
      |---------------------------------
-     | Add a product
+     | Add product(s)
      |----------------
-     | Steps:
+     | Next steps:
      |  - Controller to ProductService
      |---------------------------------
      */
-    @PostMapping( consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> createProduct(@RequestBody ProductDetailsRequest productDetailsRequest){
-
+    @PostMapping( consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @ResponseBody
+    public ResponseEntity<ProductEntity> createProduct(@RequestBody ProductDetailsRequest productDetailsRequest){
+        System.out.println("I made it to the ProductController class ^_^ " + " createProduct ");
         return productService.createProduct(productDetailsRequest);
     }
 
     /*
     |-----------------------------------
-    | Update a product by id
+    | Update product(a) by id
     |----------------
-    | Steps:
+    | Next steps:
     |  - Controller to ProductService
     |----------------------------------
     */
-    @PutMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody  ProductDetailsRequest productDetailsRequest){
+    @PutMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductDetailsRequest productDetailsRequest){
+        System.out.println("I made it to the ProductController class ^_^ " + " updateProduct ");
         return productService.updateProduct(id, productDetailsRequest);
+        //return productService.updateProduct(id, retail_price, discounted_price, availability);
     }
 
     /*
     |-----------------------------------
-    | Get/retrieve a product by id
+    | Return product(s) by id
     |----------------
-    | Steps:
+    | Next steps:
     |  - Controller to ProductService
     |----------------------------------
     */
-    @GetMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ResponseBody
-    public ResponseEntity<ProductEntity> getProduct(@PathVariable Long id, @RequestBody  ProductDetailsRequest productDetailsRequest){
-         ProductEntity productEntity = productService.getProductById(id);
-         if(productEntity == null){
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<ProductEntity> getProduct(@PathVariable Long id){
+
+        ProductEntity productEntity = productService.getProductById(id);
+        if(productEntity == null){
             return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
         }
-         else{
-             return new ResponseEntity(productEntity, HttpStatus.OK);
-         }
+        else{
+            return new ResponseEntity(productEntity, HttpStatus.OK);
+        }
     }
 
     /*
-    |-----------------------------
-    | Return products by category
-    |-----------------------------
+    |---------------------------------
+    | Return product(s) by category
+    |----------------
+    | Next steps:
+    |  - Controller to ProductService
+    |---------------------------------
     */
 
+    @GetMapping( produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @ResponseBody
+    public ResponseEntity<ProductEntity> getProductByCategory(@RequestParam String category){
 
+        List<ProductEntity> productEntity = productService.getProductByCategory(category);
+        if(productEntity == null){
+            return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
+        }
+        else{
+            return new ResponseEntity(productEntity, HttpStatus.OK);
+        }
+    }
 
     /*
-    |----------------------------------------------
-    | Return products by category and availability
-    |----------------------------------------------
+    |------------------------------------------------
+    | Return product(s) by category and availability
+    |----------------
+    | Next steps:
+    |  - Controller to ProductService
+    |------------------------------------------------
     */
 
 }

@@ -3,8 +3,7 @@ package com.hackerrank.eshopping.product.dashboard.service;
 import com.hackerrank.eshopping.product.dashboard.entity.ProductEntity;
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
+import java.util.List;
 
 /*
 |---------------------------------------------------------------------------------
@@ -15,19 +14,19 @@ import java.util.ArrayList;
 public interface ProductService {
     /*
     |----------------------------------------------------
-    | Add a product
+    | Add product
     |----------------
-    | Steps:
+    | Next steps:
     |  - ProductService to ProductServiceImplementation
     |----------------------------------------------------
     */
-    ResponseEntity<String> createProduct(ProductDetailsRequest productDetailsRequest);
+    ResponseEntity<ProductEntity> createProduct(ProductDetailsRequest productDetailsRequest);
 
     /*
     |----------------------------------------------------
-    | Update a product
+    | Update product
     |----------------
-    | Steps:
+    | Next steps:
     |  - ProductService to ProductServiceImplementation
     |----------------------------------------------------
     */
@@ -35,11 +34,31 @@ public interface ProductService {
 
     /*
     |----------------------------------------------------
-    | Get/retrieve a product by id
+    | Get product by id
     |----------------
-    | Steps:
+    | Next steps:
     |  - ProductService to ProductServiceImplementation
     |----------------------------------------------------
     */
     ProductEntity getProductById(Long product_id);
+
+    /*
+    |----------------------------------------------------
+    | Return product(s) by category
+    |----------------
+    | Next steps:
+    |  - ProductService to ProductServiceImplementation
+    |----------------------------------------------------
+    */
+    List<ProductEntity> getProductByCategory(String category);
+
+    /*
+    |----------------------------------------------------
+    | Return product(s) by category and availability
+    |----------------
+    | Next steps:
+    |  - ProductService to ProductServiceImplementation
+    |----------------------------------------------------
+    */
+
 }

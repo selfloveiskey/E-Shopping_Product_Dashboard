@@ -7,10 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.transaction.Transactional;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,7 @@ import java.util.Optional;
 |--------------------------------------------------------------------------
 */
 @Service
+@Transactional
 public class ServiceImpl implements ProductService{
 
     @Autowired
@@ -28,24 +30,21 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to create the product
     |----------------
     | Steps:
-    |  - Create an instance of ProductEntity to store productDetails
-    |  - Use ProductEntity to create a instance to store productDetails
-    |  - Use ProductEntity getId method to grab the id
+    |  - Create an instance of ProductEntity & pass in productDetails
+    |  - Create a new instance of ProductEntity to store productDetails once found
+    |  - Use productEntity getId method to grab the id
     |  - Pass id to ProductRepository CRUD findById method
     |  - Store result in idDuplicateCheck
+    | - If product with same ID already exists then the HTTP response code should
+    |   be 400 otherwise, the response code should be 201
     |--------------------------------------------------------------------------
     */
     @Override
-    public ResponseEntity<String> createProduct(ProductDetailsRequest productDetailsRequest) {
+    public ResponseEntity<ProductEntity> createProduct(ProductDetailsRequest productDetailsRequest) {
+
         ProductEntity productEntity = new ProductEntity(productDetailsRequest);
         Optional<ProductEntity> idDuplicateCheck = repository.findById(productEntity.getId());
 
-        /*
-        |---------------------------------------------------------------------------------
-        | If product with same ID already exists then the HTTP response code should be 400
-        | otherwise, the response code should be 201
-        |---------------------------------------------------------------------------------
-        */
         if(idDuplicateCheck.isPresent()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -60,10 +59,10 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to update the product
     |----------------
     | Steps:
-    |  - Create variables to hold the pass by reference values
-    |  - Use productDetailsRequest get methods to retrieve information
-    |    and store in variables.
-    |  - Check to see if product is in the database
+    |  - Create a new instance of ProductEntity to store productDetails once found
+    |  - Pass in product_id to ProductRepository CRUD findById method to see if
+    |    the product is in the database
+    |  - Store result in idDuplicateCheck
     |  - If the product exists, update its Retail_price, Discounted_price, and
     |    Availability then return HTTP response code 200
     |  - If product does not exist return HTTP response code 400
@@ -89,23 +88,99 @@ public class ServiceImpl implements ProductService{
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Tell your program how its going to return the product by id
+    |----------------
+    | Steps:
+    |  - Create a new instance of ProductEntity to store productDetails once found
+    |  - Pass in product_id to ProductRepository CRUD findById method to see if
+    |    the product is in the database
+    |  - Store result in idDuplicateCheck
+    | - If product with the requested ID does not exists then the HTTP response code
+    |   should be 404; otherwise, the response code should be 200
+    |--------------------------------------------------------------------------
+    */
     @Override
     public ProductEntity getProductById(Long product_id) {
 
         ProductEntity idDuplicateCheck = repository.findById(product_id).orElse(null);
 
-        /*
-        |---------------------------------------------------------------------------------
-        | If product with the requested ID does not exists then the HTTP response code
-        | should be 404; otherwise, the response code should be 200
-        |---------------------------------------------------------------------------------
-        */
+//        System.out.println(idDuplicateCheck.getName());
+
         if(idDuplicateCheck == null) {
             return null;
-            //new ResponseEntity(HttpStatus.NOT_FOUND)
         }
         else{
             return idDuplicateCheck;
         }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tell your program how its going to return the product by category
+    |----------------
+    | Steps:
+    |  - Create a new instance of ProductEntity to store productDetails once found
+    |  - Pass in product_id to ProductRepository CRUD findById method to see if
+    |    the product is in the database
+    |  - Store result in idDuplicateCheck
+    |  - If product with the requested ID does not exists then the HTTP response code
+    |    should be 404; otherwise, the response code should be 200
+    |--------------------------------------------------------------------------
+
+    |--------------------------------------------------------------------------
+    | Requirements
+    |--------------
+    | - Return JSON array of all products by the given category using GET request
+    | - HTTP response should be 200
+    | - JSON array should be sorted by availability
+    | - In stock products must be listed before out of stock products
+    | - Products with same availability must be sorted by discount price in
+    |   ascending order
+    | - Products with same discount price must be sorted by ID in ascending order
+    |--------------------------------------------------------------------------
+    */
+    @Override
+    public List<ProductEntity> getProductByCategory(String category) {
+
+        List<ProductEntity> productList = repository.findAllByCategory(category);
+
+        List<ProductEntity> sortedProductList = productList.stream()
+                                                .sorted(Comparator.comparing(ProductEntity::getAvailability).reversed())
+                                                .collect(Collectors.toList());
+
+        if(sortedProductList == null) {
+            return null;
+        }
+        else{
+            return sortedProductList;
+        }
+    }
+
+    /*
+    |----------------------------------------------------------------------------------
+    | Tell your program how its going to return the product by category & availability
+    |----------------
+    | Steps:
+    |  -
+    |  -
+    |  -
+    |  -
+    |  - The response code should be 200
+    |----------------------------------------------------------------------------------
+
+    |--------------------------------------------------------------------------
+    | Requirements
+    |--------------
+    | - Return JSON array of all products by the given category and availability
+    |   using GET request
+    | - HTTP response should be 200
+    | - JSON array should be sorted by discount percentage in descending order
+    | - Products with same discount percentage status must be sorted by discount
+    |   price in ascending order.
+    | - Products with same discount price must be sorted by ID in ascending order
+    | Note: Discount percentage is always an integer
+    |--------------------------------------------------------------------------
+    */
 }

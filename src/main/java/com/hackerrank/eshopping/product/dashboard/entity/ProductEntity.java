@@ -1,12 +1,8 @@
 package com.hackerrank.eshopping.product.dashboard.entity;
 
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
-import com.hackerrank.eshopping.product.dashboard.model.UpdateProductDetailsRequest;
-
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "products")
@@ -28,7 +24,7 @@ public class ProductEntity{
     @Column(nullable = true)
     private Double discounted_price;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Boolean availability;
 
     public ProductEntity() {
