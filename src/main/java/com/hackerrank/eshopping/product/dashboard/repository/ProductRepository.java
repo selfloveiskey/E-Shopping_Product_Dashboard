@@ -3,8 +3,7 @@ package com.hackerrank.eshopping.product.dashboard.repository;
 import com.hackerrank.eshopping.product.dashboard.entity.ProductEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 /*
 |--------------------------------------------------------
@@ -19,7 +18,9 @@ public interface ProductRepository extends CrudRepository<ProductEntity, Long> {
     | and return it to the ServiceImpl file
     |---------------------------------------------------------------------------
     */
-      Optional<ProductEntity> findById(Long id);
+    Optional<ProductEntity> findById(Long id);
 
-      List<ProductEntity> findAllByCategory(String category);
+    ArrayList<ProductEntity> findAllByCategory(String category);
+
+    ArrayList<ProductEntity> findAllByCategoryAndAvailability(String category,Boolean availability);
 }

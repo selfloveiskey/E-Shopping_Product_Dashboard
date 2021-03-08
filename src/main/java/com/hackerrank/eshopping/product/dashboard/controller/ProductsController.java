@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 /*
 |-------------------------------------------------------------
@@ -21,7 +23,7 @@ public class ProductsController {
    @Autowired
    ProductService productService;
 
-     /*
+    /*
      |---------------------------------
      | Add product(s)
      |----------------
@@ -32,13 +34,13 @@ public class ProductsController {
     @PostMapping( consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     @ResponseBody
     public ResponseEntity<ProductEntity> createProduct(@RequestBody ProductDetailsRequest productDetailsRequest){
-        System.out.println("I made it to the ProductController class ^_^ " + " createProduct ");
+
         return productService.createProduct(productDetailsRequest);
     }
 
     /*
     |-----------------------------------
-    | Update product(a) by id
+    | Update product(s) by id
     |----------------
     | Next steps:
     |  - Controller to ProductService
@@ -46,9 +48,8 @@ public class ProductsController {
     */
     @PutMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE}, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductDetailsRequest productDetailsRequest){
-        System.out.println("I made it to the ProductController class ^_^ " + " updateProduct ");
+
         return productService.updateProduct(id, productDetailsRequest);
-        //return productService.updateProduct(id, retail_price, discounted_price, availability);
     }
 
     /*
@@ -79,12 +80,12 @@ public class ProductsController {
     |  - Controller to ProductService
     |---------------------------------
     */
-
-    @GetMapping( produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     @ResponseBody
     public ResponseEntity<ProductEntity> getProductByCategory(@RequestParam String category){
 
-        List<ProductEntity> productEntity = productService.getProductByCategory(category);
+        ArrayList<ProductEntity> productEntity = productService.getProductByCategory(category);
+
         if(productEntity == null){
             return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
         }
@@ -102,4 +103,45 @@ public class ProductsController {
     |------------------------------------------------
     */
 
+    @GetMapping(params = {"category", "availability"},produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    @ResponseBody
+    public ResponseEntity<ProductEntity> getProductByCategoryAndAvailability(@RequestParam String category,@RequestParam String availability){
+
+        ArrayList<ProductEntity> productEntity = new ArrayList<ProductEntity>();
+
+        if(availability.equals("1")){
+             productEntity = productService.findProductByCategoryAndAvailability(category,true);
+        }
+        else if(availability.equals("0")){
+             productEntity = productService.findProductByCategoryAndAvailability(category,false);
+        }
+
+        if(productEntity == null){
+            return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
+        }
+        else{
+            return new ResponseEntity(productEntity, HttpStatus.OK);
+        }
+    }
+
+    /*
+    |-----------------------------------
+    | Return all products
+    |----------------
+    | Next steps:
+    |  - Controller to ProductService
+    |----------------------------------
+    */
+    @GetMapping(params = {"!category"},produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<ProductEntity> getAllProduct(){
+
+        ArrayList<ProductEntity> productEntity = productService.getAllProducts();
+
+        if(productEntity == null){
+            return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
+        }
+        else{
+            return new ResponseEntity(productEntity, HttpStatus.OK);
+        }
+    }
 }
