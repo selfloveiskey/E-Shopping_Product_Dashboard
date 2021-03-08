@@ -1,5 +1,6 @@
 package com.hackerrank.eshopping.product.dashboard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,9 @@ public class ProductEntity{
 
     @Column(nullable = true)
     private Double discounted_price;
+    @JsonIgnore
+    @Column(nullable = true)
+    private Integer discounted_percentage;
 
     @Column(nullable = true)
     private Boolean availability;
@@ -45,6 +49,7 @@ public class ProductEntity{
         this.category = productDetails.getCategory();
         this.retail_price = productDetails.getRetail_price();
         this.discounted_price = productDetails.getDiscounted_price();
+        this.discounted_percentage = productDetails.getDiscounted_percentage();
         this.availability = productDetails.getAvailability();
     }
 
@@ -86,6 +91,14 @@ public class ProductEntity{
 
     public void setDiscounted_price(Double discountedPrice) {
         this.discounted_price = discountedPrice;
+    }
+
+    public Integer getDiscounted_percentage() {
+        return discounted_percentage;
+    }
+
+    public void setDiscounted_percentage(Integer discounted_percentage) {
+        this.discounted_percentage = discounted_percentage;
     }
 
     public Boolean getAvailability() {

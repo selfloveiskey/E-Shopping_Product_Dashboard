@@ -3,16 +3,15 @@ package com.hackerrank.eshopping.product.dashboard.service;
 import com.hackerrank.eshopping.product.dashboard.entity.ProductEntity;
 import com.hackerrank.eshopping.product.dashboard.model.ProductDetailsRequest;
 import com.hackerrank.eshopping.product.dashboard.repository.ProductRepository;
+import com.hackerrank.eshopping.product.dashboard.calculations.ProductCalculations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 /*
 |--------------------------------------------------------------------------
 | Details how the abstract methods from ProductService are implemented
@@ -24,6 +23,12 @@ public class ServiceImpl implements ProductService{
 
     @Autowired
     ProductRepository repository;
+
+    ProductCalculations productCalculations = new ProductCalculations();
+
+    public Double retail_price;
+    public Double discounted_price;
+    public Integer discounted_percentage;
 
     /*
     |--------------------------------------------------------------------------
@@ -46,11 +51,17 @@ public class ServiceImpl implements ProductService{
         Optional<ProductEntity> idDuplicateCheck = repository.findById(productEntity.getId());
 
         if(idDuplicateCheck.isPresent()) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else{
+            if(productEntity != null){
+               retail_price = productEntity.getRetail_price();
+               discounted_price = productEntity.getDiscounted_price();
+               discounted_percentage = productCalculations.calculateDiscountPercentage(retail_price, discounted_price);
+               productEntity.setDiscounted_percentage(discounted_percentage);
+            }
             repository.save(productEntity);
-            return new ResponseEntity(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
     }
 
@@ -73,18 +84,21 @@ public class ServiceImpl implements ProductService{
         ProductEntity idDuplicateCheck = repository.findById(product_id).orElse(null);
 
         if(idDuplicateCheck == null){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else{
-            idDuplicateCheck.setName(productDetailsRequest.getName());
-            idDuplicateCheck.setCategory(productDetailsRequest.getCategory());
             idDuplicateCheck.setRetail_price(productDetailsRequest.getRetail_price());
             idDuplicateCheck.setDiscounted_price(productDetailsRequest.getDiscounted_price());
             idDuplicateCheck.setAvailability(productDetailsRequest.getAvailability());
 
+            retail_price = idDuplicateCheck.getRetail_price();
+            discounted_price = idDuplicateCheck.getDiscounted_price();
+            discounted_percentage = productCalculations.calculateDiscountPercentage(retail_price, discounted_price);
+            idDuplicateCheck.setDiscounted_percentage(discounted_percentage);
+
             repository.save(idDuplicateCheck);
 
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
@@ -104,16 +118,7 @@ public class ServiceImpl implements ProductService{
     @Override
     public ProductEntity getProductById(Long product_id) {
 
-        ProductEntity idDuplicateCheck = repository.findById(product_id).orElse(null);
-
-//        System.out.println(idDuplicateCheck.getName());
-
-        if(idDuplicateCheck == null) {
-            return null;
-        }
-        else{
-            return idDuplicateCheck;
-        }
+        return repository.findById(product_id).orElse(null);
     }
 
     /*
@@ -132,30 +137,28 @@ public class ServiceImpl implements ProductService{
     |--------------------------------------------------------------------------
     | Requirements
     |--------------
-    | - Return JSON array of all products by the given category using GET request
+    | - Return JSON array of all products by the given category using GET request - COMPLETED
     | - HTTP response should be 200
-    | - JSON array should be sorted by availability
-    | - In stock products must be listed before out of stock products
+    | - JSON array should be sorted by availability  - COMPLETED
+    |   meaning in stock products must be listed before out of stock products
     | - Products with same availability must be sorted by discount price in
     |   ascending order
     | - Products with same discount price must be sorted by ID in ascending order
     |--------------------------------------------------------------------------
     */
     @Override
-    public List<ProductEntity> getProductByCategory(String category) {
+    public ArrayList<ProductEntity> getProductByCategory(String category) {
 
-        List<ProductEntity> productList = repository.findAllByCategory(category);
+        ArrayList<ProductEntity> productList = repository.findAllByCategory(category);
 
-        List<ProductEntity> sortedProductList = productList.stream()
-                                                .sorted(Comparator.comparing(ProductEntity::getAvailability).reversed())
-                                                .collect(Collectors.toList());
+        Stream<ProductEntity> sortedProductList = productList.stream().sorted(Comparator.comparing(ProductEntity::getAvailability)
+                                                                                        .reversed()
+                                                                                        .thenComparing(ProductEntity::getDiscounted_price));
 
-        if(sortedProductList == null) {
-            return null;
-        }
-        else{
-            return sortedProductList;
-        }
+        List<ProductEntity> sortedList = sortedProductList.collect(Collectors.toList());
+        ArrayList<ProductEntity> arrayList = new ArrayList<ProductEntity>(sortedList);
+
+        return arrayList;
     }
 
     /*
@@ -183,4 +186,47 @@ public class ServiceImpl implements ProductService{
     | Note: Discount percentage is always an integer
     |--------------------------------------------------------------------------
     */
+    @Override
+    public ArrayList<ProductEntity> findProductByCategoryAndAvailability(String category, Boolean availability) {
+
+        String category1 = category.replace("%20"," ");
+
+        ArrayList<ProductEntity> productList = repository.findAllByCategoryAndAvailability(category1,availability);
+
+        Stream<ProductEntity> sortedProductList = productList.stream().sorted(Comparator.comparing(ProductEntity::getDiscounted_percentage)
+                                                                                        .reversed()
+                                                                                        .thenComparing(ProductEntity::getDiscounted_price)
+                                                                                        .thenComparing(ProductEntity::getId));
+
+        List<ProductEntity> sortedList = sortedProductList.collect(Collectors.toList());
+
+        ArrayList<ProductEntity> arrayList = new ArrayList<ProductEntity>(sortedList);
+
+        return arrayList;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tell your program how its going to return all products
+    |----------------
+    | Steps:
+    |  - Use
+    |  -
+    |
+    |  -
+    |  - The response code should be 200
+    |--------------------------------------------------------------------------
+    */
+    @Override
+    public ArrayList<ProductEntity> getAllProducts() {
+
+        List<ProductEntity> productList = (List<ProductEntity>) repository.findAll();
+
+        Stream<ProductEntity> sortedProductList = productList.stream().sorted(Comparator.comparing(ProductEntity::getId));
+
+        List<ProductEntity> sortedList = sortedProductList.collect(Collectors.toList());
+        ArrayList<ProductEntity> arrayList = new ArrayList<ProductEntity>(sortedList);
+
+        return arrayList;
+    }
 }

@@ -12,6 +12,7 @@ public class ProductDetailsRequest {
     private String category;
     private Double retail_price;
     private Double discounted_price;
+    private Integer discounted_percentage;
     private Boolean availability;
 
     public ProductDetailsRequest() {
@@ -55,6 +56,14 @@ public class ProductDetailsRequest {
 
     public void setDiscounted_price(Double discounted_price) {
         this.discounted_price = discounted_price;
+    }
+
+    public Integer getDiscounted_percentage() {
+        return discounted_percentage;
+    }
+
+    public void setDiscounted_percentage(Integer discounted_percentage) {
+        this.discounted_percentage = discounted_percentage;
     }
 
     public Boolean getAvailability() {
