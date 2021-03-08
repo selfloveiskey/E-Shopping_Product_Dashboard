@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 /*
 |-------------------------------------------------------------
 | Responsible for all operations that have to do with products
@@ -53,17 +52,22 @@ public class ProductsController {
     }
 
     /*
-    |-----------------------------------
+    |------------------------------------------------------
     | Return product(s) by id
+    |----------------
+    | - If product with the requested ID does not exists
+    |   the HTTP response code should be 404.
+    | - Otherwise, the response code should be 200
     |----------------
     | Next steps:
     |  - Controller to ProductService
-    |----------------------------------
+    |------------------------------------------------------
     */
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<ProductEntity> getProduct(@PathVariable Long id){
 
         ProductEntity productEntity = productService.getProductById(id);
+
         if(productEntity == null){
             return new ResponseEntity<ProductEntity>(HttpStatus.NOT_FOUND);
         }
@@ -75,6 +79,10 @@ public class ProductsController {
     /*
     |---------------------------------
     | Return product(s) by category
+    |----------------
+    | - If product with the requested ID does not exists
+    |   the HTTP response code should be 404.
+    | - Otherwise, the response code should be 200
     |----------------
     | Next steps:
     |  - Controller to ProductService
@@ -98,11 +106,21 @@ public class ProductsController {
     |------------------------------------------------
     | Return product(s) by category and availability
     |----------------
+    | - Create a new ArrayList to store the products
+    | - Check each products availability: 1 = true
+    |   and 0 = false.
+    | - The method call only accepts Boolean values for
+    |   availability.
+    | - Pass in correct boolean for availability
+    | - If product with the requested ID does not exists
+    |   the HTTP response code should be 404.
+    | - Otherwise, the response code should be 200,
+    |   and return ArrayList of products
+    |----------------
     | Next steps:
     |  - Controller to ProductService
     |------------------------------------------------
     */
-
     @GetMapping(params = {"category", "availability"},produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     @ResponseBody
     public ResponseEntity<ProductEntity> getProductByCategoryAndAvailability(@RequestParam String category,@RequestParam String availability){
@@ -125,12 +143,17 @@ public class ProductsController {
     }
 
     /*
-    |-----------------------------------
+    |----------------------------------------------------
     | Return all products
+    |----------------
+    | - If product with the requested ID does not exists
+    |   the HTTP response code should be 404.
+    | - Otherwise, the response code should be 200,
+    |   and return ArrayList of products
     |----------------
     | Next steps:
     |  - Controller to ProductService
-    |----------------------------------
+    |----------------------------------------------------
     */
     @GetMapping(params = {"!category"},produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<ProductEntity> getAllProduct(){

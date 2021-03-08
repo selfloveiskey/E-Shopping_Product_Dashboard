@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ProductRepository extends CrudRepository<ProductEntity, Long> {
     /*
     |---------------------------------------------------------------------------
-    | If the record is found the database will create a ProductEntity object
+    | If the record is found, the database will create a ProductEntity object
     | and return it to the ServiceImpl file
     |---------------------------------------------------------------------------
     */

@@ -35,13 +35,15 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to create the product
     |----------------
     | Steps:
-    |  - Create an instance of ProductEntity & pass in productDetails
-    |  - Create a new instance of ProductEntity to store productDetails once found
-    |  - Use productEntity getId method to grab the id
-    |  - Pass id to ProductRepository CRUD findById method
-    |  - Store result in idDuplicateCheck
-    | - If product with same ID already exists then the HTTP response code should
-    |   be 400 otherwise, the response code should be 201
+    |  - Create an instance of ProductEntity & pass in productDetailsRequest
+    |  - Use productEntity getId method to get the id then
+    |  - Pass id to ProductRepository CRUD findById method to query the database
+    |  - Use Optional object of productEntity type idDuplicateCheck to store results
+    |  - If product with same ID already exists then the HTTP response code should
+    |    be 400.
+    |  - If product does not already exist, calculate and set the
+    |    discounted_percentage before saving details in the database.
+    |  - Lastly, the response code should be 201
     |--------------------------------------------------------------------------
     */
     @Override
@@ -70,13 +72,15 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to update the product
     |----------------
     | Steps:
-    |  - Create a new instance of ProductEntity to store productDetails once found
-    |  - Pass in product_id to ProductRepository CRUD findById method to see if
-    |    the product is in the database
-    |  - Store result in idDuplicateCheck
-    |  - If the product exists, update its Retail_price, Discounted_price, and
-    |    Availability then return HTTP response code 200
+    |  - Pass in product_id to ProductRepository CRUD findById method to query
+    |    the database to see if the product exist.
+    |  - Use new instance of ProductEntity idDuplicateCheck to store results
     |  - If product does not exist return HTTP response code 400
+    |  - If the product exists, update its Retail_price, Discounted_price, and
+    |    Availability.
+    |  - Recalculate and set the discounted_percentage before saving details
+    |    in the database.
+    |  - Lastly, return HTTP response code 200
     |--------------------------------------------------------------------------
     */
     public ResponseEntity<String> updateProduct(Long product_id , ProductDetailsRequest productDetailsRequest){
@@ -107,12 +111,9 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to return the product by id
     |----------------
     | Steps:
-    |  - Create a new instance of ProductEntity to store productDetails once found
-    |  - Pass in product_id to ProductRepository CRUD findById method to see if
-    |    the product is in the database
-    |  - Store result in idDuplicateCheck
-    | - If product with the requested ID does not exists then the HTTP response code
-    |   should be 404; otherwise, the response code should be 200
+    |  - Pass product_id to ProductRepository CRUD findById method to
+    |    query the database for the product
+    |  - Return results
     |--------------------------------------------------------------------------
     */
     @Override
@@ -126,21 +127,25 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to return the product by category
     |----------------
     | Steps:
-    |  - Create a new instance of ProductEntity to store productDetails once found
-    |  - Pass in product_id to ProductRepository CRUD findById method to see if
-    |    the product is in the database
-    |  - Store result in idDuplicateCheck
-    |  - If product with the requested ID does not exists then the HTTP response code
-    |    should be 404; otherwise, the response code should be 200
+    |  - Pass in category to ProductRepository findAllByCategory method to
+    |    query the database for the product.
+    |  - Create an ArrayList object of ProductEntity type to store results
+    |  - Produce a new stream with elements sorted by availability, discount
+    |    price, and ID.
+    |  - Create a stream object of ProductEntity type to store results
+    |  - Convert sortedProductList to a list then assign to a new list of
+    |    ProductEntity type.
+    |  - Create a new ArrayList and initialize it with details from sortedList
+    |  - Return arrayList
     |--------------------------------------------------------------------------
 
     |--------------------------------------------------------------------------
     | Requirements
     |--------------
-    | - Return JSON array of all products by the given category using GET request - COMPLETED
+    | - Return JSON array of all products by the given category using GET request
     | - HTTP response should be 200
-    | - JSON array should be sorted by availability  - COMPLETED
-    |   meaning in stock products must be listed before out of stock products
+    | - JSON array should be sorted by availability. Meaning in stock products
+    |   must be listed before out of stock products.
     | - Products with same availability must be sorted by discount price in
     |   ascending order
     | - Products with same discount price must be sorted by ID in ascending order
@@ -153,7 +158,8 @@ public class ServiceImpl implements ProductService{
 
         Stream<ProductEntity> sortedProductList = productList.stream().sorted(Comparator.comparing(ProductEntity::getAvailability)
                                                                                         .reversed()
-                                                                                        .thenComparing(ProductEntity::getDiscounted_price));
+                                                                                        .thenComparing(ProductEntity::getDiscounted_price)
+                                                                                        .thenComparing(ProductEntity::getId));
 
         List<ProductEntity> sortedList = sortedProductList.collect(Collectors.toList());
         ArrayList<ProductEntity> arrayList = new ArrayList<ProductEntity>(sortedList);
@@ -166,11 +172,17 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to return the product by category & availability
     |----------------
     | Steps:
-    |  -
-    |  -
-    |  -
-    |  -
-    |  - The response code should be 200
+    |  - Clean up category then store it in a new string
+    |  - Pass in category and availability to ProductRepository
+	|    findAllByCategoryAndAvailability method to query the database for the product.
+    |  - Create an ArrayList object of ProductEntity type to store results
+    |  - Produce a new stream with elements sorted by discount percentage,
+    |    discount price, and ID.
+    |  - Create a stream object of ProductEntity type to store results
+    |  - Convert sortedProductList to a list then assign to a new list of
+    |    ProductEntity type.
+    |  - Create a new ArrayList and initialize it with details from sortedList
+    |  - Return arrayList
     |----------------------------------------------------------------------------------
 
     |--------------------------------------------------------------------------
@@ -210,11 +222,15 @@ public class ServiceImpl implements ProductService{
     | Tell your program how its going to return all products
     |----------------
     | Steps:
-    |  - Use
-    |  -
-    |
-    |  -
-    |  - The response code should be 200
+    |  - Use ProductRepository CRUD findAll method to query the database for
+    |    all products.
+    |  - Save results to a List object of ProductEntity type
+    |  - Produce a new stream with elements sorted by ID.
+    |  - Create a stream object of ProductEntity type to store results
+    |  - Convert sortedProductList to a list then assign to a new list of
+    |    ProductEntity type.
+    |  - Create a new ArrayList and initialize it with details from sortedList
+    |  - Return arrayList
     |--------------------------------------------------------------------------
     */
     @Override

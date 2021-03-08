@@ -24,7 +24,8 @@ public class ProductEntity{
 
     @Column(nullable = true)
     private Double discounted_price;
-    @JsonIgnore
+
+    @JsonIgnore // Will not include this field in response
     @Column(nullable = true)
     private Integer discounted_percentage;
 
@@ -108,5 +109,4 @@ public class ProductEntity{
     public void setAvailability(Boolean availability) {
         this.availability = availability;
     }
-
 }
